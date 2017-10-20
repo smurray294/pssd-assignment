@@ -2,6 +2,7 @@
 #include <utility>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -92,23 +93,26 @@ TruckPack::Node* TruckPack::insert(Node* node, int itemWidth, int itemLength) {
     return node;
 }
 
-void TruckPack::printTree(){
-	printTreeHelper(&root);
+void TruckPack::printTree(string filename){
+	ofstream myfile;
+	myfile.open(filename);
+	printTreeHelper(&root, myfile);
+	myfile.close();
 }
 
-void TruckPack::printTreeHelper(Node* node){
+void TruckPack::printTreeHelper(Node* node, ofstream &myfile){
 	// x y width length
 	if (node != NULL){
 		if (node->left != NULL && node->right != NULL){
-			cout << node->x << " " << node->y << " " << node->width << " " << node->length << endl;
+			myfile << node->x << " " << node->y << " " << node->width << " " << node->length << endl;
 		}
 
 		if (node->left){
-			printTreeHelper(node->left);
+			printTreeHelper(node->left, myfile);
 		}
 
 		if (node->right){
-			printTreeHelper(node->right);
+			printTreeHelper(node->right, myfile);
 		}
 	}
 }

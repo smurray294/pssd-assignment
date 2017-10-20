@@ -22,6 +22,11 @@ void readInput::readInputFile(string filename){
 	string firstWord = "";
 	int nodecount = 0;
 
+	int temp1;
+	int temp2;
+	int tempwidth;
+	int templength;
+
 	istringstream iss;
 	// read file line by line
 	while (getline(inFile,line)){
@@ -57,6 +62,13 @@ void readInput::readInputFile(string filename){
 				for (int i = 0; i <= numcustomers; ++i){
 					getline(inFile,line);
 					customeritems.push_back(line);
+					iss.str(line);
+					iss >> temp1 >> temp2;
+					for (int i = 0; i < temp2; ++i){
+						iss >> tempwidth >> templength;
+						widths.push_back(tempwidth);
+						lengths.push_back(templength);
+					}
 				}
 			}
 		}

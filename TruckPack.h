@@ -1,6 +1,9 @@
 #ifndef TRUCKPACK_H
 #define TRUCKPACK_H
 
+#include <string>
+#include <fstream>
+
 class TruckPack{
 public:
 	struct Node {
@@ -17,8 +20,8 @@ public:
     }
 
     void Initialize(int width, int length);
-    void printTree();
-    void printTreeHelper(Node* node);
+    void printTree(std::string filename);
+    void printTreeHelper(Node* node, std::ofstream &myfile);
 private:
     Node root;
     int truckWidth;
