@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+import matplotlib
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Rectangle
 
 with open('results.txt') as f:
     listoflists = [[float(x)/100 for x in line.split()] for line in f]
@@ -7,7 +9,6 @@ with open('results.txt') as f:
 # listoflists = []
 # listoflists.append((0, 0, 0.2, 0.4))
 # listoflists.append((0, 0, 0.05, 0.10))
-
 
 # build a rectangle in axes coords
 xoffset, yoffset = .4, .3
@@ -22,15 +23,22 @@ truck = patches.Rectangle(
     fill = False
     )
 
-ax.add_patch(truck)
+patches.append(truck)
 
 
 for p in [
-    patches.Rectangle(
+    Rectangle(
         (somelist[0] + xoffset, somelist[1] + yoffset), somelist[2], somelist[3],
         fill= False
     ) for somelist in listoflists
 ]:
-    ax.add_patch(p)
+    patches.append(p)
+
+p = PatchCollection(patches, cmap=matplotlib.cm.jet, alpha=0.4)
+
+colors = 100*np.random.rand(len(patches))
+p.set_array(np.array(colors))
+
+ax.add_collection(p)
 
 plt.show()
