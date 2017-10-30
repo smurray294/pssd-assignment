@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <vector>
 #include "readInput.h"
+#include "customer.h"
 
 using namespace std;
 	
@@ -24,8 +25,12 @@ void readInput::readInputFile(string filename){
 
 	int temp1;
 	int temp2;
-	int tempwidth;
+	int temp1d;
+	double temp2d;
+	double temp3d;
+	double tempwidth;
 	int templength;
+	int tempweight;
 
 	istringstream iss;
 	// read file line by line
@@ -40,6 +45,10 @@ void readInput::readInputFile(string filename){
 			getline(inFile,line);
 			iss.str(line);
 			iss >> numcustomers;
+			// initialise customers
+			for (int i = 0; i <= numcustomers; ++i){
+				customers.push_back(customer());
+			}
 			getline(inFile,line);
 			iss.str(line);
 			iss >> numvehicles;
@@ -57,18 +66,29 @@ void readInput::readInputFile(string filename){
 				for (int i = 0; i <= numcustomers; ++i){
 					getline(inFile,line);
 					customerlocdemand.push_back(line);
+					iss.str(line);
+					iss >> temp1d >> temp2d >> temp3d >> tempweight;
+					weights.push_back(tempweight);
+					customers[temp1d].id = temp1d;
+					customers[temp1d].x = temp2d;
+					customers[temp1d].y = temp3d;
+					customers[temp1d].weight = tempweight;
 				}
 			} else if (nodecount == 2){
 				for (int i = 0; i <= numcustomers; ++i){
 					getline(inFile,line);
 					customeritems.push_back(line);
 					iss.str(line);
+					
 					iss >> temp1 >> temp2;
 					for (int i = 0; i < temp2; ++i){
-						iss >> tempwidth >> templength;
+						iss >> templength >> tempwidth;
 						widths.push_back(tempwidth);
 						lengths.push_back(templength);
+						customers[temp1].add_item(templength, tempwidth);
+						customers[temp1].totalarea += customers[temp1].items[i].area;
 					}
+					customers[temp1].sort_items();
 				}
 			}
 		}
