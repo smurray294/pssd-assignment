@@ -13,7 +13,7 @@ private:
 
 	int numitems;
 
-	int vehiclecap;
+	
 	int vehiclel;
 	int vehiclew;
 
@@ -25,11 +25,12 @@ private:
 public:
 	void readInputFile(std::string filename);
 
-	void printData();
+	void printDataOF(double obj);
 
 	std::vector<customer> customers;
 	int numcustomers;
 	int numvehicles;
+	int vehiclecap;
 
 	std::vector<int> widths;
 	std::vector<int> lengths;

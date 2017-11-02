@@ -1,6 +1,9 @@
 #include "customer.h"
+#include <iostream>
 
-bool areacomparator ( const customer::item& l, const customer::item& r){
+using namespace std;
+
+bool areacomparator ( const item& l, const item& r){
 	return (l.area) > (r.area); 
 }
 
@@ -11,11 +14,13 @@ customer::customer(){
 	weight = 0;
 }
 
-void customer::add_item(int length, int width){
+void customer::add_item(int length, int width, int id){
 	items.push_back(item());
 	items[(int)items.size()-1].length = length;
 	items[(int)items.size()-1].width = width;
 	items[(int)items.size()-1].area = length*width;
+	items[(int)items.size()-1].id = id;
+	//cout << id << endl;
 }
 
 void customer::sort_items(){

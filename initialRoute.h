@@ -1,6 +1,7 @@
 #include <vector>
 #include <iostream>
 #include "customer.h"
+#include "bpInterface.h"
 
 class initialRoute{
 private:
@@ -9,8 +10,10 @@ private:
 public:
 	bool generateRoutes();
 	void printRoutes();
+	void printItems();
+	void printRoutesOF();
 
-	initialRoute(int numTrucks, std::vector<customer> myCusts);
+	initialRoute(int numTrucks, int cap, std::vector<customer> myCusts, double areaMult);
 
 	struct route{
 		std::vector<customer> customers;
@@ -23,6 +26,7 @@ public:
 	// std::vector<int> weights;
 	std::vector<customer> customers;
 	int trucks;
+	int capacity;
 	std::vector<route> routes;
 
 	// double areaW;

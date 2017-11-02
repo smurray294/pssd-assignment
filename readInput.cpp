@@ -7,6 +7,7 @@
 #include <vector>
 #include "readInput.h"
 #include "customer.h"
+#include "initialRoute.h"
 
 using namespace std;
 	
@@ -75,17 +76,20 @@ void readInput::readInputFile(string filename){
 					customers[temp1d].weight = tempweight;
 				}
 			} else if (nodecount == 2){
+				int itemid = 0;
 				for (int i = 0; i <= numcustomers; ++i){
 					getline(inFile,line);
 					customeritems.push_back(line);
 					iss.str(line);
 					
 					iss >> temp1 >> temp2;
+					customers[temp1].numitems = temp2;
 					for (int i = 0; i < temp2; ++i){
 						iss >> templength >> tempwidth;
 						widths.push_back(tempwidth);
 						lengths.push_back(templength);
-						customers[temp1].add_item(templength, tempwidth);
+						customers[temp1].add_item(templength, tempwidth, itemid);
+						itemid++;
 						customers[temp1].totalarea += customers[temp1].items[i].area;
 					}
 					customers[temp1].sort_items();
@@ -96,20 +100,11 @@ void readInput::readInputFile(string filename){
 }
 
 
-void readInput::printData(){
-	cout << "Instance:\t" << instance << endl;
-	cout << "Class:\t" << numclass << endl;
-	cout << "Customers:\t" << numcustomers << endl;
-	cout << "Vehicles:\t" << numvehicles << endl;
-	cout << "Items:\t" << numitems << endl;
-	cout << "Vehicle stats:\t" << vehiclecap << " " << vehiclel << " " << vehiclew << endl;
+void readInput::printDataOF(double obj){
+	cout << "Instance: " << instance << endl;
+	cout << "Class: " << numclass << endl;
+	cout << "Objective value: " << obj << endl;
+	cout << "Number of vehicles: " << numvehicles << endl;
 
-	for (int i = 0; i < (int)customerlocdemand.size(); ++i){
-		cout << customerlocdemand[i] << endl; 
-	}
-
-	for (int i = 0; i < (int)customeritems.size(); ++i){
-		cout << customeritems[i] << endl; 
-	}
 
 }

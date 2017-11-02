@@ -6,14 +6,14 @@
 #include <vector>
 #include "customer.h"
 
-// struct item{
-//     int length;
-//     int width;
-//     int area;
-//     int x;
-//     int y;
-//     int id;
-// };
+struct item{
+    int length;
+    int width;
+    int area;
+    int x;
+    int y;
+    int id;
+};
 
 class TruckPack{
 public:
@@ -54,19 +54,17 @@ public:
     }
 
    // void initialize(int width, int length);
-    bool pack(std::vector<customer> &customers);
+    bool pack(std::vector<customer> customers);
     void printTree(std::string filename);
     void printTreeHelper(Node* node, std::ofstream &myfile);
     void initialise();
-    void updateIDs(std::vector<customer> &customers, std::vector<item> &nonseq);
-
 private:
     Node root;
     Nodex rootx;
     int truckWidth;
     int truckLength;
-    Node* insertl(Node* node, item &myItem);
-    Node* inserts(Node* node, item &myItem);
+    Node* insertl(Node* node, int itemWidth, int itemLength);
+    Node* inserts(Node* node, int itemWidth, int itemLength);
     Nodex* insertx(Nodex* node, int itemWidth, int itemLength);
 
 };

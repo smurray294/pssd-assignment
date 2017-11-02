@@ -14,9 +14,6 @@ bool wwcomparator ( const item& l, const item& r)
 bool llcomparator ( const item& l, const item& r)
     { return l.length > r.length; }
 
-bool iidcomparator ( const item& l, const item& r)
-    { return l.id < r.id; }
-
 // void TruckPack::initialize(int width, int length){
 //     truckWidth = width;
 //     truckLength = length;
@@ -50,22 +47,19 @@ void TruckPack::initialise(){
     root.length = 40;
 }
 
-TruckPack::Node* TruckPack::inserts(Node* node, item &myItem) {
+TruckPack::Node* TruckPack::inserts(Node* node, int itemWidth, int itemLength) {
     // If this node is an internal node, try both leaves for possible space.
     // (The rectangle in an internal node stores used space, the leaves store free space)
-    int itemWidth = myItem.width;
-    int itemLength = myItem.length;
-
     if(node->left || node->right) {
         Node* newNode = NULL;
         if(node->left) {
-            newNode = inserts(node->left, myItem);
+            newNode = inserts(node->left, itemWidth, itemLength);
             if(newNode != NULL) {
                 return newNode;
             }
         }
         if(node->right) {
-            newNode = inserts(node->right, myItem);
+            newNode = inserts(node->right, itemWidth, itemLength);
             if(newNode != NULL) {
                 return newNode;
             }
@@ -83,9 +77,6 @@ TruckPack::Node* TruckPack::inserts(Node* node, item &myItem) {
     // that is probably more optimal.
     int newWidth = node->width - itemWidth;
     int newLength = node->length - itemLength;
-
-    myItem.x = node->x;
-    myItem.y = node->y;
 
     node->left = new Node;
     node->right = new Node;
@@ -132,22 +123,19 @@ TruckPack::Node* TruckPack::inserts(Node* node, item &myItem) {
     return node;
 }
 
-TruckPack::Node* TruckPack::insertl(Node* node, item &myItem) {
+TruckPack::Node* TruckPack::insertl(Node* node, int itemWidth, int itemLength) {
     // If this node is an internal node, try both leaves for possible space.
     // (The rectangle in an internal node stores used space, the leaves store free space)
-    int itemWidth = myItem.width;
-    int itemLength = myItem.length;   
-
     if(node->left || node->right) {
         Node* newNode = NULL;
         if(node->left) {
-            newNode = insertl(node->left, myItem);
+            newNode = insertl(node->left, itemWidth, itemLength);
             if(newNode != NULL) {
                 return newNode;
             }
         }
         if(node->right) {
-            newNode = insertl(node->right, myItem);
+            newNode = insertl(node->right, itemWidth, itemLength);
             if(newNode != NULL) {
                 return newNode;
             }
@@ -168,9 +156,6 @@ TruckPack::Node* TruckPack::insertl(Node* node, item &myItem) {
 
     node->left = new Node;
     node->right = new Node;
-
-    myItem.x = node->x;
-    myItem.y = node->y;
 
     (node->left)->left = NULL;
     (node->left)->right = NULL;
@@ -307,34 +292,7 @@ TruckPack::Nodex* TruckPack::insertx(Nodex* node, int itemWidth, int itemLength)
     return node;
 }
 
-void TruckPack::updateIDs(std::vector<customer> &customers, std::vector<item> &nonseq){
-    std::sort(nonseq.begin(), nonseq.end(), iidcomparator);
-
-    for (int i = 0; i < (int)nonseq.size(); ++i)
-    {
-        //cout << nonseq[i].id << endl;
-    }
-
-    cout << nonseq.size() << endl;
-
-    for (int k = 0; k < (int)nonseq.size(); ++k)
-    {
-        for (int i = 0; i < (int)customers.size(); ++i)
-        {
-            for (int j = 0; j < (int)customers[i].items.size(); ++j)
-            {
-                if (customers[i].items[j].id == nonseq[k].id){
-                    customers[i].items[j].x = nonseq[k].x;
-                    customers[i].items[j].y = nonseq[k].y;
-                    cout << customers[i].items[j].x << " " << customers[i].items[j].y << endl;
-                }
-            }
-
-        }
-    }
-}
-
-bool TruckPack::pack(vector<customer> &customers){
+bool TruckPack::pack(vector<customer> customers){
     // can we pack?
 
     bool fail;
@@ -350,8 +308,7 @@ bool TruckPack::pack(vector<customer> &customers){
             nonseq[(int)nonseq.size()-1].width = customers[i].items[j].width;
             nonseq[(int)nonseq.size()-1].length = customers[i].items[j].length;
             nonseq[(int)nonseq.size()-1].area = customers[i].items[j].area;
-            nonseq[(int)nonseq.size()-1].id = customers[i].items[j].id;
-            //cout << customers[i].items[j].id << endl;
+            nonseq[(int)nonseq.size()-1].area = customers[i].items[j].id;
         }
 
     }
@@ -364,13 +321,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (insertl(nonseq[i]) == NULL){
+        if (insertl(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -382,13 +338,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (inserts(nonseq[i]) == NULL){
+        if (inserts(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -402,13 +357,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (insertl(nonseq[i]) == NULL){
+        if (insertl(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -420,13 +374,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (inserts(nonseq[i]) == NULL){
+        if (inserts(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -440,13 +393,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (insertl(nonseq[i]) == NULL){
+        if (insertl(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -458,13 +410,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (inserts(nonseq[i]) == NULL){
+        if (inserts(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -478,13 +429,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (insertl(nonseq[i]) == NULL){
+        if (insertl(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 
@@ -496,13 +446,12 @@ bool TruckPack::pack(vector<customer> &customers){
         //cout << "packing item " << i << " " << nonseq[i].width << " by " << nonseq[i].length << endl;
 
        // if (insertx(nonseq[i].width, nonseq[i].length) == NULL){
-        if (inserts(nonseq[i]) == NULL){
+        if (inserts(nonseq[i].width, nonseq[i].length) == NULL){
             fail = 0;
         }
     }
 
     if (fail == 1){
-        updateIDs(customers, nonseq);
         return 1;
     }
 

@@ -2,16 +2,11 @@
 #define CUSTOMER_H
 
 #include <vector>
+#include "item.h"
 
 class customer{
 public:
-	struct item{
-		int length;
-		int width;
-		int area;
-	};
-
-	void add_item(int length, int width);
+	void add_item(int length, int width, int d);
 	void sort_items();
 	customer();
 
@@ -22,6 +17,7 @@ public:
 	int y;
 	int weight;
 	int id;
+	int numitems;
 };
 
 #endif
